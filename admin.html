@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard - House Agent</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f4f4f4; margin: 0; padding: 2rem; }
+    h1 { text-align: center; color: #2c3e50; }
+    table { width: 100%; border-collapse: collapse; margin: 2rem 0; }
+    th, td { border: 1px solid #ccc; padding: 0.75rem; text-align: left; }
+    th { background: #2c3e50; color: white; }
+    tr:nth-child(even) { background: #f9f9f9; }
+    .section-title { margin-top: 3rem; color: #34495e; }
+  </style>
+</head>
+<body>
+  <h1>House Agent Admin Dashboard</h1>
+
+  <h2 class="section-title">Help Requests</h2>
+  <table id="help-table">
+    <thead>
+      <tr><th>Name</th><th>Email</th><th>Issue</th></tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <h2 class="section-title">Newsletter Subscribers</h2>
+  <table id="newsletter-table">
+    <thead>
+      <tr><th>Email</th></tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyB04Q7-e0nPnhoDt4tBy2T23iWt4p_nLaw",
+      authDomain: "cars-11683.firebaseapp.com",
+      databaseURL: "https://cars-11683-default-rtdb.firebaseio.com",
+      projectId: "cars-11683",
+      storageBucket: "cars-11683.appspot.com",
+      messagingSenderId: "884218610939",
+      appId: "1:884218610939:web:824c4d711bda9a67d15c5e"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    const helpRef = ref(db, 'house_help_requests');
+    const newsletterRef = ref(db, 'house_newsletter');
+
+    const helpTable = document.querySelector('#help-table tbody');
+    const newsletterTable = document.querySelector('#newsletter-table tbody');
+
+    onValue(helpRef, snapshot => {
+      helpTable.innerHTML = '';
+      snapshot.forEach(child => {
+        const { name, email, issue } = child.val();
+        helpTable.innerHTML += `<tr><td>${name}</td><td>${email}</td><td>${issue}</td></tr>`;
+      });
+    });
+
+    onValue(newsletterRef, snapshot => {
+      newsletterTable.innerHTML = '';
+      snapshot.forEach(child => {
+        const { email } = child.val();
+        newsletterTable.innerHTML += `<tr><td>${email}</td></tr>`;
+      });
+    });
+  </script>
+</body>
+</html>
